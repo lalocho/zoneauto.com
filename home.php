@@ -8,12 +8,13 @@ session_start();
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
-    //exit;
-}
+   $columns = array('PartName','PartNumber','Suppliers','Category','Description01',
+       'Description02','Description03','Description04','Description05','Description06');
+}else {
 // For extra protection these are the columns of which the user can sort by (in your database table).
-$columns = array('PartID','PartName','PartNumber','Suppliers','Category','Description01',
-    'Description02','Description03','Description04','Description05','Description06','Price','Estimated Shipping Cost','Shipping Weight');
-
+    $columns = array('PartID', 'PartName', 'PartNumber', 'Suppliers', 'Category', 'Description01',
+        'Description02', 'Description03', 'Description04', 'Description05', 'Description06', 'Price', 'Estimated Shipping Cost', 'Shipping Weight');
+}
 // Only get the column if it exists in the above columns array, if it doesn't exist the database table will be sorted by the first item in the columns array.
 $column = isset($_GET['column']) && in_array($_GET['column'], $columns) ? $_GET['column'] : $columns[0];
 
@@ -86,6 +87,22 @@ if ($result = $link->query('SELECT * FROM carparts ORDER BY ' .  $column . ' ' .
     </head>
     <body>
     <table>
+        <?php
+        if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+            ?>
+            <th><a href="home.php?column=age&order=<?php echo $asc_or_desc; ?>">PartName<i class="fas fa-sort<?php echo $column == 'PartName' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=joined&order=<?php echo $asc_or_desc; ?>">PartNumber<i class="fas fa-sort<?php echo $column == 'PartNumber' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Suppliers<i class="fas fa-sort<?php echo $column == 'Suppliers' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Category<i class="fas fa-sort<?php echo $column == 'Category' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Description01<i class="fas fa-sort<?php echo $column == 'Description01' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Description02<i class="fas fa-sort<?php echo $column == 'Description02' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Description03<i class="fas fa-sort<?php echo $column == 'Description03' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Description04<i class="fas fa-sort<?php echo $column == 'Description04' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Description05<i class="fas fa-sort<?php echo $column == 'Description05' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Description06<i class="fas fa-sort<?php echo $column == 'Description0' ? '-' . $up_or_down : ''; ?>"></i></a></th>
+            <?php
+        }else{
+            ?>
         <tr>
             <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Part ID<i class="fas fa-sort<?php echo $column == 'PartID' ? '-' . $up_or_down : ''; ?>"></i></a></th>
             <th><a href="home.php?column=age&order=<?php echo $asc_or_desc; ?>">PartName<i class="fas fa-sort<?php echo $column == 'PartName' ? '-' . $up_or_down : ''; ?>"></i></a></th>
@@ -103,26 +120,45 @@ if ($result = $link->query('SELECT * FROM carparts ORDER BY ' .  $column . ' ' .
             <th><a href="home.php?column=name&order=<?php echo $asc_or_desc; ?>">Shipping Weight<i class="fas fa-sort<?php echo $column == 'Shipping Weight' ? '-' . $up_or_down : ''; ?>"></i></a></th>
 
         </tr>
-        <?php while ($row = $result->fetch_assoc()): ?>
+        <?php }if(isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] == true) {
+
+            while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td<?php echo $column == 'PartID' ? $add_class : ''; ?>><?php echo $row['PartID']; ?></td>
+                    <td<?php echo $column == 'PartName' ? $add_class : ''; ?>><?php echo $row['PartName']; ?></td>
+                    <td<?php echo $column == 'PartNumber' ? $add_class : ''; ?>><?php echo $row['PartNumber']; ?></td>
+                    <td<?php echo $column == 'Suppliers' ? $add_class : ''; ?>><?php echo $row['Suppliers']; ?></td>
+                    <td<?php echo $column == 'Category' ? $add_class : ''; ?>><?php echo $row['Category']; ?></td>
+                    <td<?php echo $column == 'Description01' ? $add_class : ''; ?>><?php echo $row['Description01']; ?></td>
+                    <td<?php echo $column == 'Description02' ? $add_class : ''; ?>><?php echo $row['Description02']; ?></td>
+                    <td<?php echo $column == 'Description03' ? $add_class : ''; ?>><?php echo $row['Description03']; ?></td>
+                    <td<?php echo $column == 'Description04' ? $add_class : ''; ?>><?php echo $row['Description04']; ?></td>
+                    <td<?php echo $column == 'Description05' ? $add_class : ''; ?>><?php echo $row['Description05']; ?></td>
+                    <td<?php echo $column == 'Description06' ? $add_class : ''; ?>><?php echo $row['Description06']; ?></td>
+                    <td<?php echo $column == 'Price' ? $add_class : ''; ?>><?php echo $row['Price']; ?></td>
+                    <td<?php echo $column == 'Estimated Shipping Cost' ? $add_class : ''; ?>><?php echo $row['Estimated Shipping Cost']; ?></td>
+                    <td<?php echo $column == 'Shipping Weight' ? $add_class : ''; ?>><?php echo $row['Shipping Weight']; ?></td>
+
+
+                </tr>
+            <?php endwhile; ?>
+            <?php
+        }else while ($row = $result->fetch_assoc()): ?>
             <tr>
-                <td<?php echo $column == 'PartID' ? $add_class : ''; ?>><?php echo $row['PartID']; ?></td>
-                <td<?php echo $column == 'PartName' ? $add_class : ''; ?>><?php echo $row['PartName']; ?></td>
-                <td<?php echo $column == 'PartNumber' ? $add_class : ''; ?>><?php echo $row['PartNumber']; ?></td>
-                <td<?php echo $column == 'Suppliers' ? $add_class : ''; ?>><?php echo $row['Suppliers']; ?></td>
-                <td<?php echo $column == 'Category' ? $add_class : ''; ?>><?php echo $row['Category']; ?></td>
-                <td<?php echo $column == 'Description01' ? $add_class : ''; ?>><?php echo $row['Description01']; ?></td>
-                <td<?php echo $column == 'Description02' ? $add_class : ''; ?>><?php echo $row['Description02']; ?></td>
-                <td<?php echo $column == 'Description03' ? $add_class : ''; ?>><?php echo $row['Description03']; ?></td>
-                <td<?php echo $column == 'Description04' ? $add_class : ''; ?>><?php echo $row['Description04']; ?></td>
-                <td<?php echo $column == 'Description05' ? $add_class : ''; ?>><?php echo $row['Description05']; ?></td>
-                <td<?php echo $column == 'Description06' ? $add_class : ''; ?>><?php echo $row['Description06']; ?></td>
-                <td<?php echo $column == 'Price' ? $add_class : ''; ?>><?php echo $row['Price']; ?></td>
-                <td<?php echo $column == 'Estimated Shipping Cost' ? $add_class : ''; ?>><?php echo $row['Estimated Shipping Cost']; ?></td>
-                <td<?php echo $column == 'Shipping Weight' ? $add_class : ''; ?>><?php echo $row['Shipping Weight']; ?></td>
-
-
-            </tr>
-        <?php endwhile; ?>
+        <td<?php echo $column == 'PartName' ? $add_class : ''; ?>><?php echo $row['PartName']; ?></td>
+        <td<?php echo $column == 'PartNumber' ? $add_class : ''; ?>><?php echo $row['PartNumber']; ?></td>
+        <td<?php echo $column == 'Suppliers' ? $add_class : ''; ?>><?php echo $row['Suppliers']; ?></td>
+        <td<?php echo $column == 'Category' ? $add_class : ''; ?>><?php echo $row['Category']; ?></td>
+        <td<?php echo $column == 'Description01' ? $add_class : ''; ?>><?php echo $row['Description01']; ?></td>
+        <td<?php echo $column == 'Description02' ? $add_class : ''; ?>><?php echo $row['Description02']; ?></td>
+        <td<?php echo $column == 'Description03' ? $add_class : ''; ?>><?php echo $row['Description03']; ?></td>
+        <td<?php echo $column == 'Description04' ? $add_class : ''; ?>><?php echo $row['Description04']; ?></td>
+        <td<?php echo $column == 'Description05' ? $add_class : ''; ?>><?php echo $row['Description05']; ?></td>
+        <td<?php echo $column == 'Description06' ? $add_class : ''; ?>><?php echo $row['Description06']; ?></td>
+         </tr>
+            <?php endwhile; ?>
+            <?php
+            ?>
     </table>
     </body>
     </html>
